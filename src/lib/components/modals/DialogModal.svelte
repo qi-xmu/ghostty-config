@@ -2,6 +2,7 @@
     import {sequoiaFlyFast} from "$lib/utils/animations";
     import type {Snippet} from "svelte";
     import {fade, fly} from "svelte/transition";
+    import {t} from "$lib/i18n";
 
     interface Props {
         title: string;
@@ -53,7 +54,7 @@
             {/if}
             <h2>{title}</h2>
             {#if onclose}
-                <button type="button" class="close-btn" onclick={onclose} aria-label="Dismiss">&times;</button>
+                <button type="button" class="close-btn" onclick={onclose} aria-label={t("ui.dismiss")}>&times;</button>
             {/if}
         </header>
 

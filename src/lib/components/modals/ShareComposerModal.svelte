@@ -4,6 +4,7 @@
     import DialogModal from "$lib/components/modals/DialogModal.svelte";
     import Button from "$lib/components/Button.svelte";
     import {error, success} from "$lib/stores/toasts.svelte";
+    import {t} from "$lib/i18n";
 
     const LABEL_RESET_TIMEOUT_MS = 3000;
 
@@ -23,11 +24,11 @@
         oncopyconfigtext
     }: Props = $props();
 
-    let copyLinkText = $state("Copy Link");
+    let copyLinkText = $state(t("modal.share.copyLink"));
     let notice = $state<string | null>(null);
     let canUseNativeShare = $state(false);
     const displayNotice = $derived(
-        notice ?? (isTooLong ? null : "This link contains your config data. Share only with people you trust.")
+        notice ?? (isTooLong ? null : t("modal.share.trustNotice"))
     );
 
     onMount(() => {
@@ -35,20 +36,20 @@
     });
 
     async function copyShareLink() {
-        if (!shareUrl || copyLinkText === "Copied!") return;
+        if (!shareUrl || copyLinkText === t("modal.share.copied")) return;
 
         try {
             await window.navigator.clipboard.writeText(shareUrl);
-            copyLinkText = "Copied!";
-            notice = "Share link copied to clipboard.";
-            success("Share link copied to clipboard");
-            setTimeout(() => (copyLinkText = "Copy Link"), LABEL_RESET_TIMEOUT_MS);
+            copyLinkText = t("modal.share.copied");
+            notice = t("modal.share.copiedNotice");
+            success(t("toast.shareLinkCopied"));
+            setTimeout(() => (copyLinkText = t("modal.share.copyLink")), LABEL_RESET_TIMEOUT_MS);
         }
         catch {
-            copyLinkText = "Copy Failed";
-            notice = "Select the link and copy manually.";
-            error("Failed to copy share link to clipboard");
-            setTimeout(() => (copyLinkText = "Copy Link"), LABEL_RESET_TIMEOUT_MS);
+            copyLinkText = t("modal.share.copyFailed");
+            notice = t("modal.share.copyFailedNotice");
+            error(t("toast.failedToCopyShareLink"));
+            setTimeout(() => (copyLinkText = t("modal.share.copyLink")), LABEL_RESET_TIMEOUT_MS);
         }
     }
 
@@ -57,8 +58,8 @@
 
         try {
             await navigator.share({
-                title: "Ghostty Config",
-                text: "Ghostty config share link",
+                title: t("modal.share.shareTitle"),
+                text: t("modal.share.shareText"),
                 url: shareUrl
             });
         }
@@ -72,23 +73,23 @@
 
         const ok = await oncopyconfigtext();
         notice = ok
-            ? "Config copied. You can share it as plain text instead of a link."
-            : "Clipboard access failed. Use file export instead.";
+            ? t("modal.share.configCopied")
+            : t("modal.share.clipboardFailed");
     }
 </script>
 
-<DialogModal title="Share Config" {onclose}>
+<DialogModal title={t("modal.share.title")} {onclose}>
     {#snippet icon()}
         <ShareIcon />
     {/snippet}
 
     {#if isTooLong}
-        <p class="share-modal-desc">This config is too large for reliable URL sharing across apps and browsers.</p>
+        <p class="share-modal-desc">{t("modal.share.tooLong")}</p>
         {#if displayNotice}
             <p class="status-text" role="status">{displayNotice}</p>
         {/if}
     {:else}
-        <p class="share-modal-desc">Review and copy the share link below.</p>
+        <p class="share-modal-desc">{t("modal.share.reviewLink")}</p>
         <input
             type="text"
             class="share-link-input"
@@ -103,13 +104,13 @@
 
     {#snippet footer()}
         {#if isTooLong}
-            <Button primary onclick={copyConfigForFallback}>Copy Config Text</Button>
-            <Button onclick={ondownload}>Download File</Button>
-            <Button onclick={onclose}>Close</Button>
+            <Button primary onclick={copyConfigForFallback}>{t("modal.share.copyConfigText")}</Button>
+            <Button onclick={ondownload}>{t("modal.share.downloadFile")}</Button>
+            <Button onclick={onclose}>{t("modal.close")}</Button>
         {:else}
-            <Button onclick={onclose}>Close</Button>
+            <Button onclick={onclose}>{t("modal.close")}</Button>
             {#if canUseNativeShare}
-                <Button onclick={nativeShareLink}>Share...</Button>
+                <Button onclick={nativeShareLink}>{t("modal.share.shareLink")}</Button>
             {/if}
             <Button primary onclick={copyShareLink}>{copyLinkText}</Button>
         {/if}

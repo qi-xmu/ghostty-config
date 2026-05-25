@@ -18,6 +18,7 @@
     import Text from "./Text.svelte";
     import Checkbox from "./Checkbox.svelte";
     import Button from "../Button.svelte";
+    import {t, tWith} from "$lib/i18n";
 
     interface Props {
         value?: string;
@@ -65,7 +66,7 @@
         const currentAction = getCurrentAction();
         if (!currentAction || currentAction.type !== "enum") return [];
         const options = [];
-        if (getAllowEmpty()) options.push({name: "default", value: ""});
+        if (getAllowEmpty()) options.push({name: t("keybindEditor.default"), value: ""});
         if (currentAction.options) {
             options.push(...currentAction.options.map((option) => ({name: option, value: option})));
         }
@@ -167,9 +168,9 @@
     const isAddStepDisabled = $derived(hasGlobalOrAllPrefix || hasMaxSequenceSteps);
 
     function getAddStepTooltipMessage() {
-        if (hasGlobalOrAllPrefix) return "Global/all keybinds cannot be sequences";
-        if (hasMaxSequenceSteps) return "Maximum of 4 sequence steps";
-        return "Add sequence step";
+        if (hasGlobalOrAllPrefix) return t("keybindEditor.globalNoSequence");
+        if (hasMaxSequenceSteps) return t("keybindEditor.maxSteps");
+        return t("keybindEditor.addStep");
     }
 
     const addStepTooltipAttachment = createTooltipAttachment(getAddStepTooltipMessage);
@@ -178,7 +179,7 @@
 
 <div class="editor" in:fly={{y: 30, duration: 200}}>
     <Group>
-        <Item name="Prefixes">
+        <Item name={t("keybindEditor.prefixes")}>
             <div class="prefix-row">
                 {#each VALID_PREFIXES as prefix (prefix)}
                     <label>
@@ -189,7 +190,7 @@
             </div>
         </Item>
     </Group>
-    <Group title="Trigger" borderless>
+    <Group title={t("keybindEditor.trigger")} borderless>
         <div class="sequence">
             <datalist id="key-options">
                 {#each KEY_NAMES as keyName (keyName)}
@@ -204,7 +205,7 @@
                         </button>
                     {/if}
 
-                    <Item name={steps.length > 1 ? `Key Name ${index + 1}` : "Key Name"} note={steps.length > 1 ? `The key to use for step ${index + 1} in the sequence.` : "The key to use for this action."}>
+                    <Item name={steps.length > 1 ? tWith("keybindEditor.keyNameN", {n: index + 1}) : t("keybindEditor.keyName")} note={steps.length > 1 ? tWith("keybindEditor.keyNoteN", {n: index + 1}) : t("keybindEditor.keyNote")}>
                         <div class="key-entry">
                             <input
                                 type="text"
@@ -216,7 +217,7 @@
                         </div>
                     </Item>
                     <Separator />
-                    <Item name="Modifiers">
+                    <Item name={t("keybindEditor.modifiers")}>
                         <div class="modifiers">
                             {#each VALID_MODIFIERS as modifier (modifier)}
                                 <label>
@@ -243,8 +244,8 @@
             </button>
         </div>
     </Group>
-    <Group title="Action">
-        <Item name="Name" note="The action to perform when the keybind is triggered.">
+    <Group title={t("keybindEditor.action")}>
+        <Item name={t("keybindEditor.actionName")} note={t("keybindEditor.actionName.note")}>
             <Dropdown
                 bind:value={actionName}
                 options={ACTION_DEFINITIONS.map((action) => ({
@@ -257,7 +258,7 @@
 
         {#if getCurrentAction()?.type !== "none"}
             <Separator />
-            <Item name="Argument" note="Optional argument for the action, format depends on the action type.">
+            <Item name={t("keybindEditor.argument")} note={t("keybindEditor.argument.note")}>
             {#if getCurrentAction()?.type === "enum"}
                 <Dropdown bind:value={actionArg} options={dropdownOptions} />
             {:else if getCurrentAction()?.type === "number" || getCurrentAction()?.type === "integer"}
@@ -280,7 +281,7 @@
             </Item>
         {/if}
      </Group>
-    <Group title="Result" borderless>
+    <Group title={t("keybindEditor.result")} borderless>
         <div class="preview-box">
             <div class="row">
                     <span class="p4">{getTrigger()}</span>
@@ -297,13 +298,13 @@
         {/if}
     </Group>
     <div class="actions">
-        <Button onclick={close}>Cancel</Button>
+        <Button onclick={close}>{t("keybindEditor.cancel")}</Button>
         <Button
             primary
             onclick={handleSave}
             disabled={getErrors().length > 0}
         >
-            Done
+            {t("keybindEditor.done")}
         </Button>
     </div>
 </div>

@@ -29,6 +29,7 @@
     import ModalStack from "$lib/components/modals/ModalStack.svelte";
     import ToastStack from "$lib/components/ToastStack.svelte";
     import type {Snippet} from "svelte";
+    import {t, setLocale, getLocale, getLocaleList} from "$lib/i18n";
 
     const cssConfigVars = $derived.by(() => {
         let str = "";
@@ -55,12 +56,12 @@
 
     const {children}: {children: Snippet} = $props();
 
-
-
+    const currentLocale = $derived(getLocale());
+    const localeList = getLocaleList();
 
     const htmlTitle = $derived.by(() => {
-        const name = app.title === "Ghostty Config" ? "" : app.title;
-        let title = "Ghostty Config";
+        const name = app.title === "Ghostty Config" || app.title === t("page.home.title") ? "" : app.title;
+        let title = t("page.home.title");
         if (name) title = `${name} - ${title}`;
         return title;
     });
@@ -87,57 +88,67 @@
             <Gap />
             <Tab route="/settings/application">
                 {#snippet icon()}<img src={application} alt="Application Settings" />{/snippet}
-                Application
+                {t("nav.application")}
             </Tab>
             <Tab route="/settings/clipboard">
                 {#snippet icon()}<img src={clipboard} alt="Clipboard Settings" />{/snippet}
-                Clipboard
+                {t("nav.clipboard")}
             </Tab>
             <Tab route="/settings/window">
                 {#snippet icon()}<img src={window} alt="Window Settings" />{/snippet}
-                Window
+                {t("nav.window")}
             </Tab>
             <Gap />
             <Tab route="/settings/colors">
                 {#snippet icon()}<img src={colors} alt="Color Settings" />{/snippet}
-                Colors
+                {t("nav.colors")}
             </Tab>
             <Tab route="/settings/fonts">
                 {#snippet icon()}<img src={fonts} alt="Font Settings" />{/snippet}
-                Fonts
+                {t("nav.fonts")}
             </Tab>
             <Gap />
             <Tab route="/settings/keybinds">
                 {#snippet icon()}<img src={keybinds} alt="Keybind Settings" />{/snippet}
-                Keybinds
+                {t("nav.keybinds")}
             </Tab>
             <Tab route="/settings/mouse">
                 {#snippet icon()}<img src={mouse} alt="Mouse Settings" />{/snippet}
-                Mouse
+                {t("nav.mouse")}
             </Tab>
             <Gap />
             <Tab route="/settings/gtk">
                 {#snippet icon()}<div class="icon-wrapper"><img src={gtk} alt="GTK Settings" /></div>{/snippet}
-                GTK
+                {t("nav.gtk")}
             </Tab>
             <Tab route="/settings/linux">
                 {#snippet icon()}<img src={linux} alt="Linux Settings" />{/snippet}
-                Linux
+                {t("nav.linux")}
             </Tab>
             <Tab route="/settings/macos">
                 {#snippet icon()}<img src={macos} alt="MacOS Settings" />{/snippet}
-                macOS
+                {t("nav.macos")}
             </Tab>
             <Gap expand={true} />
             <Tab route="/app/import-export">
                 {#snippet icon()}<img src={sync} alt="Settings Sync" />{/snippet}
-                Import & Export
+                {t("nav.importExport")}
             </Tab>
             <Tab route="/app/font-playground">
                 {#snippet icon()}<img src={calligraphy} alt="Font Playground" />{/snippet}
-                Font Playground
+                {t("nav.fontPlayground")}
             </Tab>
             <Gap expand={true} />
+            <div class="locale-switcher">
+                {#each localeList as loc (loc.value)}
+                    <button
+                        class:active={currentLocale === loc.value}
+                        onclick={() => setLocale(loc.value)}
+                        type="button"
+                    >{loc.label}</button>
+                {/each}
+            </div>
+            <Gap />
             <Tab route="https://github.com/zerebos/ghostty-config">
                 {#snippet icon()}<div class="icon-wrapper github"><img src={github} alt="Ghostty Config GitHub" /></div>{/snippet}
                 GitHub
@@ -310,5 +321,33 @@
     filter: invert(100%);
     height: 18px;
     width: 18px;
+}
+
+.locale-switcher {
+    display: flex;
+    gap: 4px;
+    padding: 4px 10px;
+}
+
+.locale-switcher button {
+    flex: 1;
+    padding: 4px 8px;
+    border: 1px solid var(--border-level-2);
+    border-radius: var(--radius-level-4);
+    background: transparent;
+    color: var(--font-color-muted);
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.locale-switcher button:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.locale-switcher button.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--font-color);
+    border-color: var(--border-level-3);
 }
 </style>

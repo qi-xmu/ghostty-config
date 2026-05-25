@@ -5,24 +5,26 @@
     import Group from "$lib/components/settings/Group.svelte";
     import {resolve} from "$app/paths";
     import Checkbox from "$lib/components/settings/Checkbox.svelte";
+    import {t} from "$lib/i18n";
 </script>
 
-<Page title="Ghostty Config">
+<Page title={t("page.home.title")}>
     <section>
         <div class="user">
             <div class="user-avatar">
                 <img src={logo} alt="Ghostty Config Logo" />
             </div>
             <div class="user-label">
-                <div class="user-name">Ghostty Config</div>
-                <div class="user-subtext">by <a href="https://zerebos.com" target="_blank" rel="noopener noreferrer">@zerebos</a></div>
+                <div class="user-name">{t("page.home.title")}</div>
+                <div class="user-subtext">{@html t("page.home.byAuthor").replace("<a>", '<a href="https://zerebos.com" target="_blank" rel="noopener noreferrer">')}</div>
             </div>
         </div>
         <Admonition>
-            This tool <em>will</em> have bugs! If you run into any, or have suggestions, please submit them
-            <a href="https://github.com/zerebos/ghostty-config/issues" target="_blank" rel="noopener noreferrer">on GitHub</a>.
+            {@html t("page.home.bugNotice")
+                .replace("<em>will</em>", '<em>will</em>')
+                .replace("<a>", '<a href="https://github.com/zerebos/ghostty-config/issues" target="_blank" rel="noopener noreferrer">')}
         </Admonition>
-        <Group title="Recent Changes">
+        <Group title={t("page.home.recentChanges")}>
             <ul>
                 <li><Checkbox checked />New keybind builder with sequence support</li>
                 <li><Checkbox checked />Updated settings to match Ghostty 1.2 (and 1.3-nightly)</li>
@@ -34,7 +36,7 @@
                 <li><Checkbox checked /><span>Better theme sorting by <a href="https://github.com/adamalston" target="_blank" rel="noopener noreferrer">@adamalston</a></span></li>
             </ul>
         </Group>
-        <Group title="Roadmap">
+        <Group title={t("page.home.roadmap")}>
             <ul>
                 <li><Checkbox />Command palette builder</li>
                 <li><Checkbox />Help documentation</li>

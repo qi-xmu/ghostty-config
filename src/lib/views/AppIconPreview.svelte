@@ -1,5 +1,6 @@
 <script lang="ts">
     import config from "$lib/stores/config.svelte";
+    import {t} from "$lib/i18n";
 
     const cdnBase = "https://cdn.jsdelivr.net/gh/ghostty-org/ghostty@main/macos/Assets.xcassets";
 
@@ -45,7 +46,7 @@
         hasCdnError = true;
     }
 
-    const iconLabel = $derived(config.macosIcon === "custom-style" ? "Custom style" : config.macosIcon === "custom" ? "Custom file" : config.macosIcon);
+    const iconLabel = $derived(config.macosIcon === "custom-style" ? t("page.iconPreview.customStyle") : config.macosIcon === "custom" ? t("page.iconPreview.customFile") : config.macosIcon);
     const iconUrl = $derived(iconUrls[config.macosIcon] ?? iconUrls.official);
     const frameUrl = $derived(frameUrls[config.macosIconFrame] ?? frameUrls.aluminum);
     const isCustomStyle = $derived(config.macosIcon === "custom-style");
@@ -72,9 +73,9 @@
         {:else}
             <img class="icon-image" src={hasCdnError ? iconUrls.official : iconUrl} alt={`Ghostty ${iconLabel} icon`} onerror={handlePrimaryIconError} />
             {#if isCustomFile}
-                <div class="custom-badge">Custom file</div>
+                <div class="custom-badge">{t("page.iconPreview.customFile")}</div>
             {:else if hasCdnError}
-                <div class="custom-badge">CDN fallback</div>
+                <div class="custom-badge">{t("page.iconPreview.cdnFallback")}</div>
             {/if}
         {/if}
     </div>
@@ -82,7 +83,7 @@
     <div class="label">{iconLabel}</div>
     {#if isCustomStyle && !hasCustomColors}
         <div class="note">
-            Set the icon frame and both colors for a fully custom preview.
+            {t("page.iconPreview.customStyleNote")}
         </div>
     {/if}
 </div>

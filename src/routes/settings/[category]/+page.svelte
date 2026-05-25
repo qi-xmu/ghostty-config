@@ -7,7 +7,7 @@
     import Group from "$lib/components/settings/Group.svelte";
     import Separator from "$lib/components/settings/Separator.svelte";
 
-    import settings from "$lib/data/settings";
+    import settings, {getPanelNameKey, getGroupNameKeys, getSettingNameKeys} from "$lib/data/settings";
     import config from "$lib/stores/config.svelte";
     import Text from "$lib/components/settings/Text.svelte";
     import Number from "$lib/components/settings/Number.svelte";
@@ -22,22 +22,45 @@
     import AppIconPreview from "$lib/views/AppIconPreview.svelte";
     import type {HexColor} from "$lib/utils/colors";
     import {resolve} from "$app/paths";
+    import {t} from "$lib/i18n";
 
 
     const category = $derived(settings.find(c => c.id === $page.params.category));
-    const title = $derived(category?.name ?? $page.params.category);
+    const title = $derived(
+        category ? (getPanelNameKey(category.id) ? t(getPanelNameKey(category.id)!) : category.name) : $page.params.category
+    );
+
+    function getGroupName(panelId: string, groupId: string, fallback: string): string {
+        const keys = getGroupNameKeys(panelId, groupId);
+        return keys?.nameKey ? t(keys.nameKey) : fallback;
+    }
+
+    function getGroupNote(panelId: string, groupId: string, fallback: string | undefined): string | undefined {
+        const keys = getGroupNameKeys(panelId, groupId);
+        return keys?.noteKey ? t(keys.noteKey) : fallback;
+    }
+
+    function getSettingName(panelId: string, groupId: string, settingId: string, fallback: string): string {
+        const keys = getSettingNameKeys(panelId, groupId, settingId);
+        return keys?.nameKey ? t(keys.nameKey) : fallback;
+    }
+
+    function getSettingNote(panelId: string, groupId: string, settingId: string, fallback: string | undefined): string | undefined {
+        const keys = getSettingNameKeys(panelId, groupId, settingId);
+        return keys?.noteKey ? t(keys.noteKey) : fallback;
+    }
 </script>
 
 
 <Page {title}>
     {#if category}
         {#if category.id === "fonts"}
-            <Admonition size="1.5rem">The font playground has moved to a <a href={resolve("/app/font-playground")}>separate page</a>.</Admonition>
+            <Admonition size="1.5rem">{@html t("page.settings.fontPlaygroundMoved").replace("<a>", `<a href="${resolve("/app/font-playground")}">`)}</Admonition>
         {:else if category.id === "colors"}
-            <Admonition size="1.5rem">You can reset a color to its default value by right clicking!</Admonition>
+            <Admonition size="1.5rem">{t("page.settings.resetColorTip")}</Admonition>
         {/if}
         {#each category.groups as group (group.id)}
-            <Group title={group.name} note={group.note}>
+            <Group title={getGroupName(category.id, group.id, group.name)} note={getGroupNote(category.id, group.id, group.note)}>
                 {#if category.id === "colors" && group.id === "base"}
                     <BaseColorPreview />
                     <Separator />
@@ -53,7 +76,7 @@
                 {/if}
                 {#each group.settings as setting, i (setting.id)}
                     {#if i !== 0}<Separator />{/if}
-                    <Item name={setting.name} note={setting.note}>
+                    <Item name={getSettingName(category.id, group.id, setting.id, setting.name)} note={getSettingNote(category.id, group.id, setting.id, setting.note)}>
                         {#if setting.type === "switch"}
                             <Switch bind:checked={config[setting.id as keyof typeof config] as boolean} />
                         {:else if setting.type === "text"}
@@ -74,7 +97,7 @@
             </Group>
         {/each}
     {:else}
-        <h1>What Happened?</h1>
-        <p>You shouldn't be here! If you followed a link, please report the bug on GitHub. Otherwise, go ahead and start browsing on the left.</p>
+        <h1>{t("page.settings.notFound.title")}</h1>
+        <p>{t("page.settings.notFound.message")}</p>
     {/if}
 </Page>

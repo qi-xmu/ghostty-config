@@ -1,6 +1,7 @@
 <script lang="ts">
     import {onNavigate} from "$app/navigation";
     import {processNavigation, canGoBack, canGoForward} from "$lib/stores/history.svelte";
+    import {t} from "$lib/i18n";
 
 
     onNavigate(processNavigation);
@@ -15,10 +16,10 @@
 </script>
 
 <div class="history">
-    <button class="back" type="button" onclick={back} disabled={!canGoBack()} title="Go Back">
+    <button class="back" type="button" onclick={back} disabled={!canGoBack()} title={t("ui.goBack")}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e8eaed"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" /></svg>
     </button>
-    <button class="forward" type="button" onclick={forward} disabled={!canGoForward()} title="Go Forward">
+    <button class="forward" type="button" onclick={forward} disabled={!canGoForward()} title={t("ui.goForward")}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#e8eaed"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" /></svg>
     </button>
 </div>

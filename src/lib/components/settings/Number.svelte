@@ -10,6 +10,8 @@
         integer?: boolean;
     };
 
+    import {t} from "$lib/i18n";
+
     // why is eslint like this smh
     // eslint-disable-next-line prefer-const
     let {value = $bindable(), min, max, step = 1, size, range, placeholder, integer = true}: Props = $props();
@@ -157,10 +159,10 @@
                 onblur={onBlur}
             />
             <div class="steppers">
-                <button type="button" class="stepper up" onclick={increment} aria-label="Increment">
+                <button type="button" class="stepper up" onclick={increment} aria-label={t("ui.increment")}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6" /></svg>
                 </button>
-                <button type="button" class="stepper down" onclick={decrement} aria-label="Decrement">
+                <button type="button" class="stepper down" onclick={decrement} aria-label={t("ui.decrement")}>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                 </button>
             </div>

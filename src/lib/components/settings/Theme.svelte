@@ -2,6 +2,7 @@
     import {setColorScheme} from "$lib/stores/config.svelte";
     import {success, error} from "$lib/stores/toasts.svelte";
     import Dropdown from "./Dropdown.svelte";
+    import {t} from "$lib/i18n";
 
     type Props = {
         value: string;
@@ -15,11 +16,11 @@
         try {
             const result = await setColorScheme(value);
 
-            if (result) success("Color scheme applied");
-            else error("Failed to apply color scheme");
+            if (result) success(t("toast.colorSchemeApplied"));
+            else error(t("toast.colorSchemeFailed"));
         }
         catch {
-            error("Failed to apply color scheme");
+            error(t("toast.colorSchemeFailed"));
         }
     }
 </script>

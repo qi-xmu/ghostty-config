@@ -8,6 +8,7 @@
     import {fly} from "svelte/transition";
     import Admonition from "../Admonition.svelte";
     import {success} from "$lib/stores/toasts.svelte";
+    import {t} from "$lib/i18n";
 
     let selected: number[] = $state([]);
     let {value = $bindable([])}: {value: string[]} = $props();
@@ -65,7 +66,7 @@
             return !shouldRemove;
         });
         selected = [];
-        success("Selected keybind(s) removed");
+        success(t("toast.keybindRemoved"));
     }
 
     const defaultKeybinds = (() => {
@@ -79,15 +80,15 @@
         value = [...defaultKeybinds];
         selected = [];
         if (scroller) scroller.scrollTop = 0;
-        success("Keybinds reset to defaults");
+        success(t("toast.keybindReset"));
     }
 
     async function requestResetDefaults() {
         const shouldReset = await confirm({
-            title: "Are you sure?",
-            message: "This will reset all keybinds to their defaults.",
-            confirmText: "Reset Keybinds",
-            cancelText: "Cancel",
+            title: t("modal.keybindReset.title"),
+            message: t("modal.keybindReset.message"),
+            confirmText: t("modal.keybindReset.confirm"),
+            cancelText: t("modal.cancel"),
             iconSrc: icon
         });
 
@@ -105,7 +106,7 @@
 
     function handleSave(detail: string) {
         if (editorMode === "add") {
-            success("Keybind added");
+            success(t("toast.keybindAdded"));
             value = [...value, detail];
 
             // Queue up scrolling to the bottom where the new item is added
@@ -114,7 +115,7 @@
             }, 1);
         }
         else if (selected.length === 1) {
-            success("Keybind updated");
+            success(t("toast.keybindUpdated"));
             value[selected[0]] = detail;
         }
         showEditor = false;
@@ -136,7 +137,7 @@
     />
 {:else}
     <Admonition>
-        If you're not familiar with keybinds, refer to <a href="https://ghostty.org/docs/config/keybind">the documentation</a>.
+        {@html t("keybinds.admonition").replace("<a>", '<a href="https://ghostty.org/docs/config/keybind">')}
     </Admonition>
 <div class="expandable-list" in:fly={{y: 30, duration: 200}}>
     <div class="item-list" bind:this={scroller} onscroll={onScroll}>
@@ -158,13 +159,13 @@
         {/each}
     </div>
     <div class="list-controls">
-        <button onclick={addNew} type="button" title="Add Keybind">&plus;</button>
-        <button onclick={remove} disabled={selected.length === 0} type="button" title="Remove Selected">&ndash;</button>
-        <button onclick={editSelected} disabled={selected.length !== 1} type="button" title="Edit Selected">
+        <button onclick={addNew} type="button" title={t("keybinds.add")}>&plus;</button>
+        <button onclick={remove} disabled={selected.length === 0} type="button" title={t("keybinds.remove")}>&ndash;</button>
+        <button onclick={editSelected} disabled={selected.length !== 1} type="button" title={t("keybinds.edit")}>
            <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 56 56"><path fill="currentColor" d="m43.293 16.926l2.367-2.32c1.196-1.196 1.242-2.485.188-3.563l-.797-.797c-1.055-1.055-2.344-.937-3.54.211l-2.367 2.344ZM15.66 44.488l25.57-25.547l-4.101-4.125l-25.594 25.57L9.31 45.59c-.211.562.375 1.219.937.984Z" /></svg>
         </button>
         <div class="list-controls-spacer"></div>
-        <button onclick={requestResetDefaults} type="button" title="Reset Defaults">
+        <button onclick={requestResetDefaults} type="button" title={t("keybinds.resetDefaults")}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 5H3" /><path d="M7 12H3" /><path d="M7 19H3" /><path d="M12 18a5 5 0 0 0 9-3 4.5 4.5 0 0 0-4.5-4.5c-1.33 0-2.54.54-3.41 1.41L11 14" /><path d="M11 10v4h4" /></svg>
         </button>
     </div>

@@ -4,6 +4,8 @@ interface BaseSettingType {
     id: string;
     name: string;
     note?: string;
+    nameKey?: string;
+    noteKey?: string;
 }
 
 interface Panel extends BaseSettingType {
@@ -580,3 +582,287 @@ const settings = [
 
 
 export default settings;
+
+// Translation key mappings for panels, groups, and settings
+// Keys follow the pattern: settings.{parentId}.{id}
+const PANEL_KEYS: Record<string, {nameKey: string}> = {
+    application: {nameKey: "nav.application"},
+    clipboard: {nameKey: "nav.clipboard"},
+    window: {nameKey: "nav.window"},
+    colors: {nameKey: "nav.colors"},
+    fonts: {nameKey: "nav.fonts"},
+    keybinds: {nameKey: "nav.keybinds"},
+    mouse: {nameKey: "nav.mouse"},
+    gtk: {nameKey: "nav.gtk"},
+    linux: {nameKey: "nav.linux"},
+    macos: {nameKey: "nav.macos"},
+};
+
+const GROUP_KEYS: Record<string, Record<string, {nameKey?: string; noteKey?: string}>> = {
+    application: {
+        general: {},
+        startup: {nameKey: "settings.startup.name"},
+        shutdown: {nameKey: "settings.shutdown.name"},
+        shell: {nameKey: "settings.shell.name"},
+        quick: {nameKey: "settings.quick.name"},
+        advanced: {nameKey: "settings.advanced.name", noteKey: "settings.advanced.note"},
+        bell: {nameKey: "settings.bell.name"},
+    },
+    colors: {
+        general: {},
+        base: {nameKey: "settings.base.name", noteKey: "settings.base.note"},
+        cursor: {nameKey: "settings.cursor.name", noteKey: "settings.cursor.note"},
+        palette: {nameKey: "settings.palette.name", noteKey: "settings.palette.note"},
+    },
+    fonts: {
+        general: {nameKey: "settings.fontsGeneral.name"},
+        family: {nameKey: "settings.family.name", noteKey: "settings.family.note"},
+        styles: {nameKey: "settings.styles.name", noteKey: "settings.styles.note"},
+        variations: {nameKey: "settings.variations.name", noteKey: "settings.variations.note"},
+        advanced: {nameKey: "settings.fontAdvanced.name", noteKey: "settings.fontAdvanced.note"},
+    },
+    window: {
+        main: {},
+        appearance: {nameKey: "settings.appearance.name"},
+        resize: {nameKey: "settings.resize.name"},
+    },
+    gtk: {
+        main: {},
+        tabs: {nameKey: "settings.gtkTabs.name"},
+    },
+    macos: {
+        main: {},
+        icon: {nameKey: "settings.icon.name", noteKey: "settings.icon.note"},
+    },
+};
+
+// Build a flat map of setting translation keys: "panelId.groupId.settingId" -> {nameKey, noteKey}
+const SETTING_KEYS: Record<string, {nameKey?: string; noteKey?: string}> = {};
+function sk(panel: string, group: string, id: string, nameKey?: string, noteKey?: string) {
+    SETTING_KEYS[`${panel}.${group}.${id}`] = {nameKey, noteKey};
+}
+
+// Application > General
+sk("application", "general", "title", "settings.application.title");
+sk("application", "general", "desktopNotifications", "settings.application.desktopNotifications");
+sk("application", "general", "configFile", "settings.application.configFile");
+sk("application", "general", "configDefaultFiles", "settings.application.configDefaultFiles");
+sk("application", "general", "link", "settings.application.link", "settings.application.link.note");
+sk("application", "general", "linkUrl", "settings.application.linkUrl", "settings.application.linkUrl.note");
+sk("application", "general", "linkPreviews", "settings.application.linkPreviews", "settings.application.linkPreviews.note");
+sk("application", "general", "undoTimeout", "settings.application.undoTimeout", "settings.application.undoTimeout.note");
+// Application > Startup
+sk("application", "startup", "command", "settings.startup.command");
+sk("application", "startup", "initialCommand", "settings.startup.initialCommand", "settings.startup.initialCommand.note");
+sk("application", "startup", "env", "settings.startup.env");
+sk("application", "startup", "input", "settings.startup.input", "settings.startup.input.note");
+sk("application", "startup", "maximize", "settings.startup.maximize");
+sk("application", "startup", "fullscreen", "settings.startup.fullscreen");
+sk("application", "startup", "initialWindow", "settings.startup.initialWindow");
+sk("application", "startup", "workingDirectory", "settings.startup.workingDirectory", "settings.startup.workingDirectory.note");
+// Application > Shutdown
+sk("application", "shutdown", "waitAfterCommand", "settings.shutdown.waitAfterCommand");
+sk("application", "shutdown", "abnormalCommandExitRuntime", "settings.shutdown.abnormalCommandExitRuntime");
+sk("application", "shutdown", "confirmCloseSurface", "settings.shutdown.confirmCloseSurface");
+sk("application", "shutdown", "quitAfterLastWindowClosed", "settings.shutdown.quitAfterLastWindowClosed");
+sk("application", "shutdown", "quitAfterLastWindowClosedDelay", "settings.shutdown.quitAfterLastWindowClosedDelay");
+// Application > Shell
+sk("application", "shell", "shellIntegration", "settings.shell.shellIntegration");
+sk("application", "shell", "shellIntegrationFeatures", "settings.shell.shellIntegrationFeatures", "settings.shell.shellIntegrationFeatures.note");
+sk("application", "shell", "term", "settings.shell.term");
+sk("application", "shell", "titleReport", "settings.shell.titleReport", "settings.shell.titleReport.note");
+// Application > Quick Terminal
+sk("application", "quick", "quickTerminalPosition", "settings.quick.quickTerminalPosition");
+sk("application", "quick", "quickTerminalScreen", "settings.quick.quickTerminalScreen");
+sk("application", "quick", "quickTerminalSize", "settings.quick.quickTerminalSize", "settings.quick.quickTerminalSize.note");
+sk("application", "quick", "quickTerminalAnimationDuration", "settings.quick.quickTerminalAnimationDuration");
+sk("application", "quick", "quickTerminalAutohide", "settings.quick.quickTerminalAutohide", "settings.quick.quickTerminalAutohide.note");
+sk("application", "quick", "quickTerminalSpaceBehavior", "settings.quick.quickTerminalSpaceBehavior");
+sk("application", "quick", "quickTerminalKeyboardInteractivity", "settings.quick.quickTerminalKeyboardInteractivity", "settings.quick.quickTerminalKeyboardInteractivity.note");
+// Application > Advanced
+sk("application", "advanced", "scrollbackLimit", "settings.advanced.scrollbackLimit", "settings.advanced.scrollbackLimit.note");
+sk("application", "advanced", "customShader", "settings.advanced.customShader", "settings.advanced.customShader.note");
+sk("application", "advanced", "customShaderAnimation", "settings.advanced.customShaderAnimation");
+sk("application", "advanced", "scrollToBottom", "settings.advanced.scrollToBottom", "settings.advanced.scrollToBottom.note");
+sk("application", "advanced", "enquiryResponse", "settings.advanced.enquiryResponse");
+sk("application", "advanced", "oscColorReportFormat", "settings.advanced.oscColorReportFormat");
+sk("application", "advanced", "vtKamAllowed", "settings.advanced.vtKamAllowed", "settings.advanced.vtKamAllowed.note");
+sk("application", "advanced", "imageStorageLimit", "settings.advanced.imageStorageLimit");
+// Application > Bell
+sk("application", "bell", "bellFeatures", "settings.bell.bellFeatures", "settings.bell.bellFeatures.note");
+sk("application", "bell", "bellAudioPath", "settings.bell.bellAudioPath", "settings.bell.bellAudioPath.note");
+sk("application", "bell", "bellAudioVolume", "settings.bell.bellAudioVolume", "settings.bell.bellAudioVolume.note");
+// Clipboard
+sk("clipboard", "main", "clipboardRead", "settings.clipboard.clipboardRead");
+sk("clipboard", "main", "clipboardWrite", "settings.clipboard.clipboardWrite");
+sk("clipboard", "main", "copyOnSelect", "settings.clipboard.copyOnSelect");
+sk("clipboard", "main", "clipboardTrimTrailingSpaces", "settings.clipboard.clipboardTrimTrailingSpaces");
+sk("clipboard", "main", "clipboardPasteProtection", "settings.clipboard.clipboardPasteProtection");
+sk("clipboard", "main", "clipboardPasteBracketedSafe", "settings.clipboard.clipboardPasteBracketedSafe");
+// Window
+sk("window", "main", "windowTitleFontFamily", "settings.window.windowTitleFontFamily");
+sk("window", "main", "windowSubtitle", "settings.window.windowSubtitle");
+sk("window", "main", "windowVsync", "settings.window.windowVsync");
+sk("window", "main", "windowInheritWorkingDirectory", "settings.window.windowInheritWorkingDirectory");
+sk("window", "main", "tabInheritWorkingDirectory", "settings.window.tabInheritWorkingDirectory");
+sk("window", "main", "splitInheritWorkingDirectory", "settings.window.splitInheritWorkingDirectory");
+sk("window", "main", "windowInheritFontSize", "settings.window.windowInheritFontSize");
+sk("window", "main", "windowColorspace", "settings.window.windowColorspace");
+sk("window", "main", "windowSaveState", "settings.window.windowSaveState");
+sk("window", "main", "windowShowTabBar", "settings.window.windowShowTabBar");
+sk("window", "main", "windowNewTabPosition", "settings.window.windowNewTabPosition");
+// Window > Appearance
+sk("window", "appearance", "windowTheme", "settings.appearance.windowTheme");
+sk("window", "appearance", "windowDecoration", "settings.appearance.windowDecoration");
+sk("window", "appearance", "windowPaddingX", "settings.appearance.windowPaddingX");
+sk("window", "appearance", "windowPaddingY", "settings.appearance.windowPaddingY");
+sk("window", "appearance", "windowPaddingBalance", "settings.appearance.windowPaddingBalance");
+sk("window", "appearance", "windowPaddingColor", "settings.appearance.windowPaddingColor");
+sk("window", "appearance", "windowTitlebarBackground", "settings.appearance.windowTitlebarBackground");
+sk("window", "appearance", "windowTitlebarForeground", "settings.appearance.windowTitlebarForeground");
+sk("window", "appearance", "backgroundOpacity", "settings.appearance.backgroundOpacity");
+sk("window", "appearance", "backgroundOpacityCells", "settings.appearance.backgroundOpacityCells");
+sk("window", "appearance", "backgroundBlur", "settings.appearance.backgroundBlur", "settings.appearance.backgroundBlur.note");
+sk("window", "appearance", "backgroundImage", "settings.appearance.backgroundImage", "settings.appearance.backgroundImage.note");
+sk("window", "appearance", "backgroundImageOpacity", "settings.appearance.backgroundImageOpacity");
+sk("window", "appearance", "backgroundImagePosition", "settings.appearance.backgroundImagePosition");
+sk("window", "appearance", "backgroundImageFit", "settings.appearance.backgroundImageFit");
+sk("window", "appearance", "backgroundImageRepeat", "settings.appearance.backgroundImageRepeat");
+sk("window", "appearance", "scrollbar", "settings.appearance.scrollbar", "settings.appearance.scrollbar.note");
+sk("window", "appearance", "unfocusedSplitOpacity", "settings.appearance.unfocusedSplitOpacity");
+sk("window", "appearance", "unfocusedSplitFill", "settings.appearance.unfocusedSplitFill");
+sk("window", "appearance", "splitDividerColor", "settings.appearance.splitDividerColor");
+sk("window", "appearance", "splitPreserveZoom", "settings.appearance.splitPreserveZoom", "settings.appearance.splitPreserveZoom.note");
+// Window > Resize
+sk("window", "resize", "windowHeight", "settings.resize.windowHeight", "settings.resize.windowHeight.note");
+sk("window", "resize", "windowWidth", "settings.resize.windowWidth", "settings.resize.windowWidth.note");
+sk("window", "resize", "windowPositionY", "settings.resize.windowPositionY", "settings.resize.windowPositionY.note");
+sk("window", "resize", "windowPositionX", "settings.resize.windowPositionX", "settings.resize.windowPositionX.note");
+sk("window", "resize", "windowStepResize", "settings.resize.windowStepResize");
+sk("window", "resize", "resizeOverlay", "settings.resize.resizeOverlay");
+sk("window", "resize", "resizeOverlayPosition", "settings.resize.resizeOverlayPosition");
+sk("window", "resize", "resizeOverlayDuration", "settings.resize.resizeOverlayDuration");
+// Colors > General
+sk("colors", "general", "theme", "settings.colors.theme", "settings.colors.theme.note");
+sk("colors", "general", "boldColor", "settings.colors.boldColor", "settings.colors.boldColor.note");
+sk("colors", "general", "faintOpacity", "settings.colors.faintOpacity");
+sk("colors", "general", "minimumContrast", "settings.colors.minimumContrast");
+sk("colors", "general", "paletteGenerate", "settings.colors.paletteGenerate", "settings.colors.paletteGenerate.note");
+sk("colors", "general", "paletteHarmonious", "settings.colors.paletteHarmonious", "settings.colors.paletteHarmonious.note");
+// Colors > Base
+sk("colors", "base", "background", "settings.base.background");
+sk("colors", "base", "foreground", "settings.base.foreground");
+sk("colors", "base", "selectionBackground", "settings.base.selectionBackground");
+sk("colors", "base", "selectionForeground", "settings.base.selectionForeground");
+sk("colors", "base", "selectionClearOnTyping", "settings.base.selectionClearOnTyping");
+sk("colors", "base", "selectionClearOnCopy", "settings.base.selectionClearOnCopy");
+sk("colors", "base", "selectionWordChars", "settings.base.selectionWordChars", "settings.base.selectionWordChars.note");
+// Colors > Cursor
+sk("colors", "cursor", "cursorColor", "settings.cursor.cursorColor");
+sk("colors", "cursor", "cursorText", "settings.cursor.cursorText");
+sk("colors", "cursor", "cursorOpacity", "settings.cursor.cursorOpacity");
+sk("colors", "cursor", "cursorStyle", "settings.cursor.cursorStyle");
+sk("colors", "cursor", "cursorStyleBlink", "settings.cursor.cursorStyleBlink", "settings.cursor.cursorStyleBlink.note");
+// Fonts > General
+sk("fonts", "general", "fontSize", "settings.fonts.fontSize");
+sk("fonts", "general", "fontThicken", "settings.fonts.fontThicken", "settings.fonts.fontThicken.note");
+sk("fonts", "general", "fontThickenStrength", "settings.fonts.fontThickenStrength");
+sk("fonts", "general", "fontShapingBreak", "settings.fonts.fontShapingBreak");
+sk("fonts", "general", "fontFeature", "settings.fonts.fontFeature");
+sk("fonts", "general", "fontSyntheticStyle", "settings.fonts.fontSyntheticStyle", "settings.fonts.fontSyntheticStyle.note");
+sk("fonts", "general", "alphaBlending", "settings.fonts.alphaBlending");
+// Fonts > Family
+sk("fonts", "family", "fontFamily", "settings.family.fontFamily");
+sk("fonts", "family", "fontFamilyBold", "settings.family.fontFamilyBold");
+sk("fonts", "family", "fontFamilyItalic", "settings.family.fontFamilyItalic");
+sk("fonts", "family", "fontFamilyBoldItalic", "settings.family.fontFamilyBoldItalic");
+sk("fonts", "family", "fontCodepointMap", "settings.family.fontCodepointMap");
+// Fonts > Styles
+sk("fonts", "styles", "fontStyle", "settings.styles.fontStyle");
+sk("fonts", "styles", "fontStyleBold", "settings.styles.fontStyleBold");
+sk("fonts", "styles", "fontStyleItalic", "settings.styles.fontStyleItalic");
+sk("fonts", "styles", "fontStyleBoldItalic", "settings.styles.fontStyleBoldItalic");
+// Fonts > Variations
+sk("fonts", "variations", "fontVariation", "settings.variations.fontVariation");
+sk("fonts", "variations", "fontVariationBold", "settings.variations.fontVariationBold");
+sk("fonts", "variations", "fontVariationItalic", "settings.variations.fontVariationItalic");
+sk("fonts", "variations", "fontVariationBoldItalic", "settings.variations.fontVariationBoldItalic");
+// Fonts > Advanced
+sk("fonts", "advanced", "adjustCellWidth", "settings.fontAdvanced.adjustCellWidth");
+sk("fonts", "advanced", "adjustCellHeight", "settings.fontAdvanced.adjustCellHeight");
+sk("fonts", "advanced", "adjustFontBaseline", "settings.fontAdvanced.adjustFontBaseline");
+sk("fonts", "advanced", "adjustUnderlinePosition", "settings.fontAdvanced.adjustUnderlinePosition");
+sk("fonts", "advanced", "adjustUnderlineThickness", "settings.fontAdvanced.adjustUnderlineThickness");
+sk("fonts", "advanced", "adjustStrikethroughPosition", "settings.fontAdvanced.adjustStrikethroughPosition");
+sk("fonts", "advanced", "adjustStrikethroughThickness", "settings.fontAdvanced.adjustStrikethroughThickness");
+sk("fonts", "advanced", "adjustOverlinePosition", "settings.fontAdvanced.adjustOverlinePosition");
+sk("fonts", "advanced", "adjustOverlineThickness", "settings.fontAdvanced.adjustOverlineThickness");
+sk("fonts", "advanced", "adjustCursorThickness", "settings.fontAdvanced.adjustCursorThickness");
+sk("fonts", "advanced", "adjustBoxThickness", "settings.fontAdvanced.adjustBoxThickness");
+sk("fonts", "advanced", "adjustCursorHeight", "settings.fontAdvanced.adjustCursorHeight");
+sk("fonts", "advanced", "adjustIconHeight", "settings.fontAdvanced.adjustIconHeight");
+sk("fonts", "advanced", "graphemeWidthMethod", "settings.fontAdvanced.graphemeWidthMethod");
+sk("fonts", "advanced", "freetypeLoadFlags", "settings.fontAdvanced.freetypeLoadFlags");
+// Mouse
+sk("mouse", "main", "cursorClickToMove", "settings.mouse.cursorClickToMove");
+sk("mouse", "main", "mouseHideWhileTyping", "settings.mouse.mouseHideWhileTyping");
+sk("mouse", "main", "mouseReporting", "settings.mouse.mouseReporting", "settings.mouse.mouseReporting.note");
+sk("mouse", "main", "mouseShiftCapture", "settings.mouse.mouseShiftCapture");
+sk("mouse", "main", "mouseScrollMultiplier", "settings.mouse.mouseScrollMultiplier");
+sk("mouse", "main", "rightClickAction", "settings.mouse.rightClickAction");
+sk("mouse", "main", "focusFollowsMouse", "settings.mouse.focusFollowsMouse");
+sk("mouse", "main", "clickRepeatInterval", "settings.mouse.clickRepeatInterval", "settings.mouse.clickRepeatInterval.note");
+// GTK
+sk("gtk", "main", "class", "settings.gtk.class", "settings.gtk.class.note");
+sk("gtk", "main", "x11InstanceName", "settings.gtk.x11InstanceName", "settings.gtk.x11InstanceName.note");
+sk("gtk", "main", "gtkSingleInstance", "settings.gtk.gtkSingleInstance");
+sk("gtk", "main", "gtkCustomCss", "settings.gtk.gtkCustomCss");
+sk("gtk", "main", "gtkOpenglDebug", "settings.gtk.gtkOpenglDebug");
+sk("gtk", "main", "appNotifications", "settings.gtk.appNotifications", "settings.gtk.appNotifications.note");
+// GTK > Tabs
+sk("gtk", "tabs", "gtkToolbarStyle", "settings.gtkTabs.gtkToolbarStyle");
+sk("gtk", "tabs", "gtkTitlebarStyle", "settings.gtkTabs.gtkTitlebarStyle", "settings.gtkTabs.gtkTitlebarStyle.note");
+sk("gtk", "tabs", "gtkTabsLocation", "settings.gtkTabs.gtkTabsLocation");
+sk("gtk", "tabs", "gtkWideTabs", "settings.gtkTabs.gtkWideTabs", "settings.gtkTabs.gtkWideTabs.note");
+sk("gtk", "tabs", "gtkTitlebar", "settings.gtkTabs.gtkTitlebar");
+sk("gtk", "tabs", "gtkTitlebarHideWhenMaximized", "settings.gtkTabs.gtkTitlebarHideWhenMaximized");
+sk("gtk", "tabs", "gtkQuickTerminalLayer", "settings.gtkTabs.gtkQuickTerminalLayer", "settings.gtkTabs.gtkQuickTerminalLayer.note");
+sk("gtk", "tabs", "gtkQuickTerminalNamespace", "settings.gtkTabs.gtkQuickTerminalNamespace", "settings.gtkTabs.gtkQuickTerminalNamespace.note");
+// Linux
+sk("linux", "main", "asyncBackend", "settings.linux.asyncBackend", "settings.linux.asyncBackend.note");
+sk("linux", "main", "linuxCgroup", "settings.linux.linuxCgroup");
+sk("linux", "main", "linuxCgroupMemoryLimit", "settings.linux.linuxCgroupMemoryLimit");
+sk("linux", "main", "linuxCgroupProcessesLimit", "settings.linux.linuxCgroupProcessesLimit");
+sk("linux", "main", "linuxCgroupHardFail", "settings.linux.linuxCgroupHardFail");
+// macOS
+sk("macos", "main", "macosNonNativeFullscreen", "settings.macos.macosNonNativeFullscreen", "settings.macos.macosNonNativeFullscreen.note");
+sk("macos", "main", "macosTitlebarStyle", "settings.macos.macosTitlebarStyle");
+sk("macos", "main", "macosTitlebarProxyIcon", "settings.macos.macosTitlebarProxyIcon");
+sk("macos", "main", "macosOptionAsAlt", "settings.macos.macosOptionAsAlt");
+sk("macos", "main", "macosWindowShadow", "settings.macos.macosWindowShadow");
+sk("macos", "main", "macosWindowButtons", "settings.macos.macosWindowButtons");
+sk("macos", "main", "macosHidden", "settings.macos.macosHidden");
+sk("macos", "main", "macosAutoSecureInput", "settings.macos.macosAutoSecureInput");
+sk("macos", "main", "macosSecureInputIndication", "settings.macos.macosSecureInputIndication");
+sk("macos", "main", "macosDockDropBehavior", "settings.macos.macosDockDropBehavior", "settings.macos.macosDockDropBehavior.note");
+sk("macos", "main", "macosShortcuts", "settings.macos.macosShortcuts", "settings.macos.macosShortcuts.note");
+sk("macos", "main", "autoUpdate", "settings.macos.autoUpdate", "settings.macos.autoUpdate.note");
+sk("macos", "main", "autoUpdateChannel", "settings.macos.autoUpdateChannel", "settings.macos.autoUpdateChannel.note");
+// macOS > Icon
+sk("macos", "icon", "macosIcon", "settings.icon.macosIcon", "settings.icon.macosIcon.note");
+sk("macos", "icon", "macosCustomIcon", "settings.icon.macosCustomIcon", "settings.icon.macosCustomIcon.note");
+sk("macos", "icon", "macosIconFrame", "settings.icon.macosIconFrame");
+sk("macos", "icon", "macosIconGhostColor", "settings.icon.macosIconGhostColor");
+sk("macos", "icon", "macosIconScreenColor", "settings.icon.macosIconScreenColor");
+
+export function getPanelNameKey(panelId: string): string | undefined {
+    return PANEL_KEYS[panelId]?.nameKey;
+}
+
+export function getGroupNameKeys(panelId: string, groupId: string): {nameKey?: string; noteKey?: string} | undefined {
+    return GROUP_KEYS[panelId]?.[groupId];
+}
+
+export function getSettingNameKeys(panelId: string, groupId: string, settingId: string): {nameKey?: string; noteKey?: string} | undefined {
+    return SETTING_KEYS[`${panelId}.${groupId}.${settingId}`];
+}

@@ -3,6 +3,7 @@
     import {luminosity, isDark, type HexColor} from "$lib/utils/colors";
     import ColorPicker from "$lib/components/ColorPicker.svelte";
     import {success} from "$lib/stores/toasts.svelte";
+    import {t} from "$lib/i18n";
 
     // eslint-disable-next-line prefer-const
     let {value = $bindable(), size = 20, label = "", defaultValue}: {value: HexColor, size?: number, label?: string, defaultValue?: HexColor} = $props();
@@ -21,7 +22,7 @@
         event.stopPropagation();
         if (defaultValue !== undefined) {
             value = defaultValue;
-            success("Color reset to default");
+            success(t("toast.colorResetToDefault"));
         }
     }
 
